@@ -42,7 +42,6 @@ sub parse_date {
             unless $parser->success;
     } else {
         $date = DateTime->now
-                ->set_time_zone('floating')
                 ->set_time_zone($user->time_zone);
     }
     $date->truncate(to => 'day');
