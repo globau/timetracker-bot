@@ -49,8 +49,8 @@ sub execute {
 
     # active ranges
     foreach my $range ($ranges->each) {
-        my $start_time = $range->start->format_cldr('hh:mm');
-        my $end_time   = $range->end->format_cldr('hh:mm');
+        my $start_time = $range->start->format_cldr('HH:mm');
+        my $end_time   = $range->end->format_cldr('HH:mm');
         push @response, $self->format_response(
             minutes => $range->minutes,
             extra   => "$start_time - $end_time",
