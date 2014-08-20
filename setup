@@ -1,0 +1,77 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+
+use FindBin qw($RealBin);
+use lib $RealBin;
+
+# check for required modules
+
+my @requires = qw(
+    Daemon::Generic
+    DBI
+    File::Slurp
+    Module::Refresh
+    Mojo::JSON
+    Moo
+    POE
+    POE::Component::IRC::Plugin::BotAddressed
+    POE::Component::IRC::Plugin::Connector
+    POE::Component::IRC::Plugin::CycleEmpty
+    POE::Component::IRC::Plugin::NickServID
+    Scalar::Util
+    Text::ParseWords
+);
+my @missing;
+foreach my $required (@requires) {
+    (my $file = $required) =~ s/::/\//g;
+    $file .= '.pm';
+    my $found = 0;
+    foreach my $path (@INC) {
+        if (-e "$path/$file") {
+            $found = 1;
+            last;
+        }
+    }
+    push @missing, $required
+        unless $found;
+}
+die "missing mandatory modules:\n  " . join("\n  ", @missing) . "\n"
+    if @missing;
+
+# load/check config
+
+require 'TimeTracker/Config.pm';
+TimeTracker::Config->instance;
+
+# create tables
+
+require 'TimeTracker/DB.pm';
+my $db = TimeTracker::DB->instance;
+$db->add_table('active', "
+    CREATE TABLE `active` (
+    `nick` varchar(30) NOT NULL,
+    `start_time` datetime NOT NULL,
+    `end_time` datetime NOT NULL
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+");
+$db->add_table('edits', "
+    CREATE TABLE `edits` (
+    `nick` varchar(30) NOT NULL,
+    `dt` datetime NOT NULL,
+    `minutes` int(11) NOT NULL,
+    `reason` varchar(45) NOT NULL
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+");
+$db->add_table('user', "
+    CREATE TABLE `user` (
+    `nick` varchar(30) NOT NULL,
+    `time_zone` varchar(45) NOT NULL,
+    `work_week` float NOT NULL,
+    `last_status` char(1) NOT NULL,
+    PRIMARY KEY (`nick`),
+    UNIQUE KEY `nick_UNIQUE` (`nick`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+");
+
+print "setup ok\n";

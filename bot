@@ -1,0 +1,10 @@
+#!/usr/bin/perl
+use Moo;
+
+BEGIN { $ENV{TZ} = 'UTC' }
+
+use FindBin qw($RealBin);
+use lib $RealBin;
+
+use TimeTracker::Daemon;
+TimeTracker::Daemon->start();
