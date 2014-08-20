@@ -63,7 +63,7 @@ sub format_cldr {
     return ''
         unless $start;
     return $start->format_cldr($format)
-        unless $end;
+        if $start->ymd eq $end->ymd;
     return $start->format_cldr($format) . ' - ' . $end->format_cldr($format);
 }
 
