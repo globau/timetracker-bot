@@ -8,7 +8,7 @@ use TimeTracker::Range;
 use TimeTracker::User;
 use TimeTracker::Util;
 
-sub _build_triggers {[ qw( day d ) ]}
+sub _build_triggers {[ qw( day d today ) ]}
 
 sub _build_help_short {
     'show details for a day',
@@ -62,6 +62,7 @@ sub execute {
         push @response, $self->format_response(
             minutes => $edit->minutes,
             extra   => $edit->reason,
+            signed  => 1,
         );
     }
 

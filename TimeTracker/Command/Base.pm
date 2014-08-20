@@ -65,14 +65,14 @@ sub format_response {
         }
 
         return
-            format_minutes($args{minutes}, undef, $hour_width) . ' ' .
+            format_minutes($args{minutes}, $args{signed}, $hour_width) . ' ' .
             ($args{caption} // '') . ' ' .
             '[' . $target . ']' .
             ($args{extra} ? ' ' . $args{extra} : ''),
         ;
     } else {
         return
-            format_minutes($args{minutes}, undef, $hour_width) . ' ' .
+            format_minutes($args{minutes}, $args{signed}, $hour_width) . ' ' .
             ($args{caption} // '') . ' ' .
             ($args{extra} ? ' ' . $args{extra} : ''),
         ;
