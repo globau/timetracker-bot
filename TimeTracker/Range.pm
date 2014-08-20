@@ -29,7 +29,9 @@ sub _trigger_end {
 
 sub _build_minutes {
     my ($self) = @_;
-    return $self->start->between($self->end, 'minutes');
+    return $self->start->epoch == $self->end->epoch
+        ? 1
+        : $self->start->between($self->end, 'minutes');
 }
 
 sub clone {
