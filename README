@@ -27,6 +27,23 @@ use the "register" command to start tracking.
 use the "timezone" command to set your local timezone (defaults to us/pacific).
 use the "hours" command to set your weekly hours (defaults to 40).
 
+EXAMPLE REPORT
+
+38:25 Week [+00:25] 38/week : 7 Apr - 13 Apr
+07:07 Monday    [-00:29]
+09:36 Tuesday   [+02:00]
+08:20 Wednesday [+00:44]
+08:46 Thursday  [+01:10]
+04:36 Friday    [-03:00]
+
+the first line shows the total time worked for the week (38 hours 25 minutes),
+that i worked 25 minutes more than my target of 38 hours per week.
+
+following that is the daily breakdown.  for example on wednesday i worked 8
+hours 25 minutes, which is 44 minutes more than my my daily target.
+
+and, yes, my distribution of hours during my week is very odd.
+
 COMMANDS
 
 syntax: day [date]
