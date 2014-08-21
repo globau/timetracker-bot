@@ -45,7 +45,7 @@ sub execute {
     }
 
     my @response;
-    push @response, $range->format_cldr('d MMM') . '  ' . format_minutes($total);
+    push @response, format_minutes($total) . ' ' . $range->format_cldr('d MMM');
 
     # active ranges
     foreach my $range ($ranges->each) {
