@@ -1,0 +1,17 @@
+#!/usr/bin/perl
+use Moo;
+
+BEGIN { $ENV{TZ} = 'UTC' }
+
+use FindBin qw($RealBin);
+use lib $RealBin;
+
+use TimeTracker::Commands;
+
+my $commands = TimeTracker::Commands->instance;
+
+print "COMMANDS\n";
+foreach my $handler (@{ $commands->handlers }) {
+    next if $handler->help_short eq 'not implemented';
+    print "\n", join("\n", @{ $handler->help_long }), "\n";
+}

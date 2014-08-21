@@ -1,3 +1,68 @@
 glob's irc time tracking bot.
-
 currently running on irc.mozilla.org #timetracker
+
+ABOUT
+
+this bot monitors you irc status changes, and keeps a track of when you are in
+its channel and not "away".
+
+i use to to keep a track on my hours to keep my work/life balance in order, as
+well as logging for tax purposes.
+
+INSTALLATION
+
+1. copy configuration.json.sample to configuration.json and edit
+2. run 'setup' and install any missing perl modules.  repeat running 'setup'
+   until no errors are reported.
+3. run 'bot start'
+
+REGISTRATION
+
+join the configured channel.
+
+to run commands either enter them into the channel preceded with ! (eg.
+!help), or send the bot a private message.
+
+use the "register" command to start tracking.
+use the "timezone" command to set your local timezone (defaults to us/pacific).
+use the "hours" command to set your weekly hours (defaults to 40).
+
+COMMANDS
+
+syntax: day [date]
+shows details of the hours online for the specified date.
+defaults to today if no date is provided.
+
+syntax: edit "date" "adjustment" "reason"
+adjusts the hours worked for the specified date.
+eg. edit "last tuesday" "+8 hours" "public holidays"
+eg. edit 2014-04-29 -45m left myself logged in during lunch
+
+syntax: edits date
+shows all your edits for the specified date.
+
+syntax: help [command]
+displays a list of commands, or help for a specific command if provided.
+
+syntax: hours [hours]
+displays or sets the number of hours you work per week.
+the default is 40 hours per week.
+
+syntax: register
+register your current nick to be tracked by timetracker.
+you must be both registered and in #timetracker for your time to be tracked.
+
+syntax: status
+displays the last known status of your nick, either Away or Online.
+
+syntax: timezone [zone|find zone]
+displays or sets your time zone.
+use "find" to grep for valid time zones
+the default time zone is PST8PDT.
+
+syntax: week [date]
+shows a summary of the hours online for the specified date.
+defaults to this week if no date is provided.
+
+syntax: year [year]
+shows a summary of the months online for the specified calendar year.
