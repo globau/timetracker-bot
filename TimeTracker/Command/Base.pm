@@ -52,7 +52,10 @@ sub parse_date {
 sub format_response {
     my ($self, %args) = @_;
     my $hour_width = $args{wide} ? 3 : 2;
+    my @response;
 
+    push @response, format_minutes($args{minutes}, $args{signed}, $hour_width);
+    push @response, $args{caption} if $args{caption};
     if (exists $args{target}) {
         my $target;
         if ($args{minutes} == $args{target}) {
@@ -62,20 +65,10 @@ sub format_response {
         } else {
             $target = '+' . format_minutes($args{minutes} - $args{target});
         }
-
-        return
-            format_minutes($args{minutes}, $args{signed}, $hour_width) . ' ' .
-            ($args{caption} // '') . ' ' .
-            '[' . $target . ']' .
-            ($args{extra} ? ' ' . $args{extra} : ''),
-        ;
-    } else {
-        return
-            format_minutes($args{minutes}, $args{signed}, $hour_width) . ' ' .
-            ($args{caption} // '') . ' ' .
-            ($args{extra} ? ' ' . $args{extra} : ''),
-        ;
+        push @response, '[' . $target . ']';
     }
+    push @response, $args{extra} if $args{extra};
+    return join(' ', @response);
 }
 
 1;
