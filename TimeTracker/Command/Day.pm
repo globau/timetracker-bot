@@ -16,7 +16,7 @@ sub _build_help_short {
 sub _build_help_long {[
     'syntax: day [date]',
     'shows details of the hours online for the specified date.',
-    'defaults to today if no date is provied.',
+    'defaults to today if no date is provided.',
 ]}
 
 sub execute {

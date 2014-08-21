@@ -15,7 +15,7 @@ sub _build_help_short {
 sub _build_help_long {[
     'syntax: week [date]',
     'shows a summary of the hours online for the specified date.',
-    'defaults to this week if no date is provied.',
+    'defaults to this week if no date is provided.',
 ]}
 
 sub execute {
