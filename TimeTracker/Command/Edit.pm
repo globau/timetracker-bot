@@ -38,10 +38,12 @@ sub execute {
 
     # parse adjustment
     die "invalid adjustment '$adjustment'\n"
-        unless $adjustment =~ /^([+-]?\d+(?:\.\d+)?)\s*(m|minutes?|h|hours?)$/i;
+        unless $adjustment =~ /^([+-]?\d+(?:\.\d+)?)\s*(m|minutes?|h|hours?|d|days?)$/i;
     my ($adjust_amount, $adjust_scale) = ($1, $2);
     $adjust_scale = lc(substr($adjust_scale, 0, 1));
-    if ($adjust_scale eq 'h') {
+    if ($adjust_scale eq 'd') {
+        $adjustment = 60 * ($user->work_week / 5);
+    } elsif ($adjust_scale eq 'h') {
         $adjustment = 60 * $adjust_amount;
     } else {
         $adjustment = $adjust_amount;
