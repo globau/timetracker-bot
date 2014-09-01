@@ -16,15 +16,6 @@ my ($nick, @command) = @ARGV;
 my $command = join(' ', @command);
 
 my $commands = TimeTracker::Commands->instance;
-
-eval {
-    my $response = $commands->handle($nick, $command);
-    foreach my $line (@$response) {
-        print "$line\n";
-    }
-};
-if ($@) {
-    my $error = "$@";
-    $error =~ s/(^\s+|\s+$)//g;
-    print "error: $error\n";
+foreach my $line (@{ $commands->execute($nick, $command) }) {
+    print "$line\n";
 }

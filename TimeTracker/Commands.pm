@@ -52,34 +52,19 @@ sub execute {
     my ($self, $nick, $command_line) = @_;
 
     my ($handler, $args) = $self->_get_handler($command_line);
-    return unless defined($handler);
+    return [] unless defined($handler);
+    return [ 'huh?' ] unless $handler;
 
-    if ($handler) {
-        my $execute = sprintf("'%s' '%s' '%s' '%s'",
-            _esc(TimeTracker::Config->instance->command_file),
-            _esc($nick),
-            _esc($handler->command),
-            _esc($args)
-        );
-        my @response = `$execute 2>&1`;
-        chomp(@response);
-        return \@response;
-    } else {
-        return [ 'huh?' ];
+    my $response;
+    eval {
+        $response = $handler->execute($nick, $args);
+    };
+    if ($@) {
+        my $error = "$@";
+        $error =~ s/(^\s+|\s+$)//g;
+        $response = [ "error: $error" ];
     }
-}
-
-sub handle {
-    my ($self, $nick, $command_line) = @_;
-
-    my ($handler, $args) = $self->_get_handler($command_line);
-    return unless defined($handler);
-
-    if ($handler) {
-        return $handler->execute($nick, $args);
-    } else {
-        return [ 'huh?' ];
-    }
+    return $response;
 }
 
 sub handler_for {
@@ -113,14 +98,6 @@ sub _get_handler {
 
 sub _build__refresher {
     return Module::Refresh->new();
-}
-
-sub _esc {
-    my ($str) = @_;
-    return '' unless defined $str;
-    $str =~ s/'/\\'/g;
-    $str =~ s/[\r\n]+/ /g;
-    return $str;
 }
 
 #
