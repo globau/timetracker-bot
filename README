@@ -65,6 +65,9 @@ syntax: hours [hours]
 displays or sets the number of hours you work per week.
 the default is 40 hours per week.
 
+syntax: ping
+responds with "pong".  used to test the responsiveness of the bot.
+
 syntax: register
 register your current nick to be tracked by timetracker.
 you must be both registered and in #timetracker for your time to be tracked.
