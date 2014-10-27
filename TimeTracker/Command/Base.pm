@@ -55,6 +55,7 @@ sub format_response {
     my @response;
 
     push @response, format_minutes($args{minutes}, $args{signed}, $hour_width);
+    push @response, '|';
     push @response, $args{caption} if $args{caption};
     if (exists $args{target}) {
         my $target;
