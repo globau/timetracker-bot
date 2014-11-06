@@ -42,7 +42,7 @@ sub execute {
     my ($adjust_amount, $adjust_scale) = ($1, $2);
     $adjust_scale = lc(substr($adjust_scale, 0, 1));
     if ($adjust_scale eq 'd') {
-        $adjustment = 60 * ($user->work_week / 5);
+        $adjustment = 60 * ($user->work_week / 5) * $adjust_amount;
     } elsif ($adjust_scale eq 'h') {
         $adjustment = 60 * $adjust_amount;
     } else {
