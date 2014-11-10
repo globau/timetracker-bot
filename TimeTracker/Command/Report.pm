@@ -1,4 +1,4 @@
-package TimeTracker::Command::Year;
+package TimeTracker::Command::Report;
 use Moo;
 extends 'TimeTracker::Command::Base';
 
@@ -7,14 +7,15 @@ use DateTime;
 use TimeTracker::Range;
 use TimeTracker::User;
 
-sub _build_triggers {[ qw( year y ) ]}
+sub _build_triggers {[ qw( report r ) ]}
 
 sub _build_help_short {
-    'show a summary of the year',
+    'show a per-month summary of the specified range',
 }
 sub _build_help_long {[
-    'syntax: year [year]',
-    'shows a summary of the months online for the specified calendar year.',
+    'syntax: report [start month] [end month',
+    'shows a summary of the months online for the specified range.',
+    'shows the current calendar year if no start month provided.',
 ]}
 
 sub execute {
@@ -23,12 +24,26 @@ sub execute {
     my $today = $self->today($user);
 
     # parse args
-    my $start_date = $self->parse_date($user, $args, 'year');
+    my ($start_arg, $end_arg) = split(/\s+/, $args);
+    my $start_date;
+    if ($start_arg) {
+        $start_arg .= '-01' if $start_arg && $start_arg =~ /^\d\d\d\d-\d\d$/;
+        $start_date = $self->parse_date($user, $start_arg, 'month');
+    } else {
+        $start_date = $today->clone->set(month => 1, day => 1);
+    }
+    $start_date->set(day => 1)->truncate(to => 'month');
 
-    # expand to the whole year
-    $start_date->set(month => 1, day => 1);
-    my $end_date = $start_date->clone->add(years => 1)->add(minutes => -1);
+    my $end_date;
+    if ($end_arg) {
+        $end_arg .= '-01' if $end_arg =~ /^\d\d\d\d-\d\d$/;
+        $end_date = $self->parse_date($user, $end_arg, 'month');
+        $end_date->add(months => 1)->add(minutes => -1);
+    } else {
+        $end_date = $start_date->clone->add(years => 1)->add(minutes => -1);
+    }
     $end_date = $today if $end_date > $today;
+    $start_date->truncate(to => 'month');
 
     my $range = TimeTracker::Range->new(
         start   => $start_date,
@@ -64,15 +79,16 @@ sub execute {
         }
     }
 
-    # consolidate into months
+    # consolidate into months;
     my %months;
-    foreach my $ymd (sort keys %days) {
+    foreach my $ymd (keys %days) {
         my $date = $days{$ymd}{date};
-        $months{$date->month} ||= {
-            name    => $date->format_cldr('MMM'),
+        my $ym = $date->format_cldr('yyyyMM');
+        $months{$ym} ||= {
+            name    => $date->format_cldr('yyyy MMM'),
             minutes => 0,
         };
-        $months{$date->month}{minutes} += $days{$ymd}{minutes};
+        $months{$ym}{minutes} += $days{$ymd}{minutes};
     }
 
     # report
