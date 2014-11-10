@@ -72,6 +72,10 @@ syntax: register
 register your current nick to be tracked by timetracker.
 you must be both registered and in #timetracker for your time to be tracked.
 
+syntax: report [start month] [end month
+shows a summary of the months online for the specified range.
+shows the current calendar year if no start month provided.
+
 syntax: status
 displays the last known status of your nick, either Away or Online.
 
@@ -83,6 +87,3 @@ the default time zone is PST8PDT.
 syntax: week [date]
 shows a summary of the hours online for the specified date.
 defaults to this week if no date is provided.
-
-syntax: year [year]
-shows a summary of the months online for the specified calendar year.
