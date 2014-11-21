@@ -13,7 +13,7 @@ sub _build_help_short {
     'show a per-month summary of the specified range',
 }
 sub _build_help_long {[
-    'syntax: report [start month] [end month',
+    'syntax: report [start month] [end month]',
     'shows a summary of the months online for the specified range.',
     'shows the current calendar year if no start month provided.',
 ]}
@@ -24,7 +24,7 @@ sub execute {
     my $today = $self->today($user);
 
     # parse args
-    my ($start_arg, $end_arg) = split(/\s+/, $args);
+    my ($start_arg, $end_arg) = split(/\s+/, $args // '');
     my $start_date;
     if ($start_arg) {
         $start_arg .= '-01' if $start_arg && $start_arg =~ /^\d\d\d\d-\d\d$/;
