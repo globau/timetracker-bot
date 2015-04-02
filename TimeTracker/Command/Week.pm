@@ -30,8 +30,6 @@ sub execute {
     $start_date->subtract(days => $start_date->day_of_week - 1);
     # and select the whole week
     my $end_date = $start_date->clone->add(days => 7)->add(minutes => -1);
-    $end_date = $today->clone->add(days => 1)->add(minutes => -1)
-        if $end_date > $today;
 
     my $range = TimeTracker::Range->new(
         start   => $start_date,
@@ -81,6 +79,9 @@ sub execute {
     foreach my $ymd (sort keys %days) {
         # don't report on the weekend unless there were hours logged
         next if $days{$ymd}{date}->day_of_week > 5 && $days{$ymd}{minutes} == 0;
+
+        # only report edits if the date is in the future
+        next if $days{$ymd}{date} > $today && !$days{$ymd}{edited};
 
         push @response, $self->format_response(
             minutes => $days{$ymd}{minutes},
