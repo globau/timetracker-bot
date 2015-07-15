@@ -46,9 +46,10 @@ sub execute {
 
     my @response;
     push @response, $self->format_response(
-        minutes => $total,
-        caption => $range->format_cldr('d MMM'),
-        target  => ($user->work_week * 60) / 5,
+        minutes   => $total,
+        caption   => $range->format_cldr('d MMM'),
+        target    => ($user->work_week * 60) / 5,
+        delimiter => ':',
     );
 
     # active ranges

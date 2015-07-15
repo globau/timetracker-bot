@@ -71,10 +71,11 @@ sub execute {
     my @response;
     my $hours_per_day = ($user->work_week * 60) / 5;
     push @response, $self->format_response(
-        minutes => $total_minutes,
-        caption => 'Week',
-        target  => $user->work_week * 60,
-        extra   => $user->work_week . '/week : ' . $range->format_cldr('d MMM'),
+        minutes   => $total_minutes,
+        caption   => 'Week',
+        target    => $user->work_week * 60,
+        extra     => $user->work_week . '/week : ' . $range->format_cldr('d MMM'),
+        delimiter => ':',
     );
     foreach my $ymd (sort keys %days) {
         # don't report on the weekend unless there were hours logged
