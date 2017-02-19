@@ -3,10 +3,10 @@ use Moo;
 
 use File::Slurp;
 use FindBin qw($RealBin);
-use Mojo::JSON;
+use Mojo::JSON qw(decode_json);
 
 #
-# properties
+# propertie qw(decode_json);
 #
 
 has db_host => ( is => 'ro' );
@@ -29,9 +29,7 @@ has debug           => ( is => 'rw', default => sub { 0 } );
 
 around BUILDARGS => sub {
     my ($orig, $class) = @_;
-    my $json = Mojo::JSON->new();
-    my $config = $json->decode(scalar read_file("$RealBin/configuration.json"))
-        || die $json->error;
+    my $config = decode_json(scalar read_file("$RealBin/configuration.json"));
 
     $config->{db_port} ||= 3306;
     $config->{irc_port} ||= 6668;
