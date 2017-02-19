@@ -1,3 +1,5 @@
 configuration.json
 timetracker.pid
 timetracker.log
+timestamp
+timetracker.sql.gz
