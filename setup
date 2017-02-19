@@ -1,6 +1,7 @@
 #!/usr/bin/perl
 use strict;
 use warnings;
+use local::lib;
 
 use FindBin qw($RealBin);
 use lib $RealBin;
@@ -9,6 +10,7 @@ use lib $RealBin;
 
 my @requires = qw(
     Daemon::Generic
+    DateTime
     DBI
     File::Slurp
     Module::Refresh
