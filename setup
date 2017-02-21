@@ -11,6 +11,7 @@ use lib $RealBin;
 my @requires = qw(
     Daemon::Generic
     DateTime
+    DateTime::Format::Natural
     DBI
     File::Slurp
     Module::Refresh
