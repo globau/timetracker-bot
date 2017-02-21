@@ -1,4 +1,5 @@
 #!/usr/bin/perl
+use local::lib;
 use Moo;
 
 BEGIN { $ENV{TZ} = 'UTC' }
