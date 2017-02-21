@@ -14,7 +14,6 @@ my @requires = qw(
     DateTime::Format::Natural
     DBI
     File::Slurp
-    Module::Refresh
     Mojo::JSON
     Moo
     POE

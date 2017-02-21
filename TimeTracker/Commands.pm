@@ -3,18 +3,12 @@ use Moo;
 
 use FindBin qw($Bin);
 use File::Spec;
-use Module::Refresh;
 
 has _handler_files => ( is => 'rw', default => sub { [] } );
-has _handlers      => ( is => 'rw' );
-has _refresher     => ( is => 'lazy' );
+has handlers       => ( is => 'lazy' );
 
-sub refresh_handlers {
+sub _build_handlers {
     my ($self) = @_;
-
-    foreach my $file (@{ $self->_handler_files }) {
-        $self->_refresher->refresh_module($file);
-    }
 
     my $handlers = [];
 
@@ -34,18 +28,7 @@ sub refresh_handlers {
         print STDERR "$@\n" if $@;
     }
 
-    $handlers = [ sort { $a->triggers->[0] cmp $b->triggers->[0] } @$handlers ];
-    $self->_handlers($handlers);
-}
-
-sub handlers {
-    my ($self) = @_;
-    my $handlers = $self->_handlers;
-    if (!$handlers) {
-        $self->refresh_handlers();
-        $handlers = $self->_handlers;
-    }
-    return $handlers;
+    return [ sort { $a->triggers->[0] cmp $b->triggers->[0] } @$handlers ];
 }
 
 sub execute {
@@ -94,10 +77,6 @@ sub _get_handler {
             if $handler->handles($command);
     }
     return (0);
-}
-
-sub _build__refresher {
-    return Module::Refresh->new();
 }
 
 #

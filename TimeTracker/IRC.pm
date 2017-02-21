@@ -160,7 +160,6 @@ sub _command {
 
     next if $nick eq $config->irc_nick || $nick eq 'timetracker';
 
-    $commands->refresh_handlers();
     my $response = $commands->execute($nick, $what);
     return unless $response && @$response;
 
