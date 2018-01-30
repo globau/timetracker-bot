@@ -1,5 +1,4 @@
 #!/usr/bin/perl
-use local::lib;
 use strict;
 use warnings;
 use local::lib;
