@@ -11,10 +11,12 @@ well as logging for tax purposes.
 
 INSTALLATION
 
-1. copy configuration.json.sample to configuration.json and edit
-2. run 'setup' and install any missing perl modules.  repeat running 'setup'
-   until no errors are reported.
-3. run 'timetracker start'
+1. install cpanm and the local::lib perl module system-wide
+2. copy configuration.json.sample to configuration.json and edit
+4. run 'cpanm --verbose --local-lib ~/perl5/ --notest --installdeps .' to
+   install perl modules
+3. run './setup-db' to setup your database schema
+3. run './timetracker start'
 
 REGISTRATION
 

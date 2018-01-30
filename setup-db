@@ -1,45 +1,11 @@
 #!/usr/bin/perl
+use local::lib;
 use strict;
 use warnings;
 use local::lib;
 
 use FindBin qw($RealBin);
 use lib "$RealBin/lib";
-
-# check for required modules
-
-my @requires = qw(
-    Daemon::Generic
-    DateTime
-    DateTime::Format::Natural
-    DBI
-    File::Slurp
-    Mojo::JSON
-    Moo
-    POE
-    POE::Component::IRC::Plugin::BotAddressed
-    POE::Component::IRC::Plugin::Connector
-    POE::Component::IRC::Plugin::CycleEmpty
-    POE::Component::IRC::Plugin::NickServID
-    Scalar::Util
-    Text::ParseWords
-);
-my @missing;
-foreach my $required (@requires) {
-    (my $file = $required) =~ s/::/\//g;
-    $file .= '.pm';
-    my $found = 0;
-    foreach my $path (@INC) {
-        if (-e "$path/$file") {
-            $found = 1;
-            last;
-        }
-    }
-    push @missing, $required
-        unless $found;
-}
-die "missing mandatory modules:\n  " . join("\n  ", @missing) . "\n"
-    if @missing;
 
 # load/check config
 
