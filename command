@@ -5,7 +5,7 @@ use Moo;
 BEGIN { $ENV{TZ} = 'UTC' }
 
 use FindBin qw($RealBin);
-use lib $RealBin;
+use lib "$RealBin/lib";
 
 use DateTime;
 use TimeTracker::Commands;

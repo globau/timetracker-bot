@@ -4,7 +4,7 @@ use warnings;
 use local::lib;
 
 use FindBin qw($RealBin);
-use lib $RealBin;
+use lib "$RealBin/lib";
 
 # check for required modules
 
