@@ -14,7 +14,7 @@ INSTALLATION
 1. copy configuration.json.sample to configuration.json and edit
 2. run 'setup' and install any missing perl modules.  repeat running 'setup'
    until no errors are reported.
-3. run 'bot start'
+3. run 'timetracker start'
 
 REGISTRATION
 
