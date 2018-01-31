@@ -1,4 +1,5 @@
 # cpanm --verbose --local-lib ~/perl5/ --notest --installdeps .
+requires 'DBD::mysql', '4.043';
 requires 'DBI', '1.63';
 requires 'Daemon::Generic', '0.83';
 requires 'File::Slurp', '9999.19';
