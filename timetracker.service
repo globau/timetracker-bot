@@ -1,0 +1,14 @@
+[Unit]
+Description=Timetracker IRC Daemon
+After=syslog.target network.target
+
+[Service]
+ExecStart=/home/timetracker/timetracker/timetracker
+Group=timetracker
+KillSignal=SIGINT
+Restart=always
+RestartSec=5
+User=timetracker
+
+[Install]
+WantedBy=multi-user.target
