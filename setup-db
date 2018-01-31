@@ -1,36 +1,45 @@
 #!/usr/bin/perl
+use local::lib;
 use strict;
 use warnings;
-use local::lib;
+use v5.10;
 
 use FindBin qw($RealBin);
 use lib "$RealBin/lib";
 
+BEGIN { $ENV{TZ} = 'UTC' }
+
+use TimeTracker::Config ();
+use TimeTracker::DB     ();
+
 # load/check config
 
-require 'TimeTracker/Config.pm';
 TimeTracker::Config->instance;
 
 # create tables
 
-require 'TimeTracker/DB.pm';
 my $db = TimeTracker::DB->instance;
-$db->add_table('active', "
+$db->add_table(
+    'active', '
     CREATE TABLE `active` (
     `nick` varchar(30) NOT NULL,
     `start_time` datetime NOT NULL,
     `end_time` datetime NOT NULL
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-");
-$db->add_table('edits', "
+'
+);
+$db->add_table(
+    'edits', '
     CREATE TABLE `edits` (
     `nick` varchar(30) NOT NULL,
     `dt` datetime NOT NULL,
     `minutes` int(11) NOT NULL,
     `reason` varchar(45) NOT NULL
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-");
-$db->add_table('user', "
+'
+);
+$db->add_table(
+    'user', '
     CREATE TABLE `user` (
     `nick` varchar(30) NOT NULL,
     `time_zone` varchar(45) NOT NULL,
@@ -39,6 +48,7 @@ $db->add_table('user', "
     PRIMARY KEY (`nick`),
     UNIQUE KEY `nick_UNIQUE` (`nick`)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-");
+'
+);
 
-print "setup ok\n";
+say 'setup ok';

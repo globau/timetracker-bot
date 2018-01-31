@@ -1,19 +1,22 @@
 package TimeTracker::Edit;
+## no critic (Subroutines::ProhibitUnusedPrivateSubroutines)
+use strict;
+use v5.10;
+use warnings;
+
 use Moo;
+use TimeTracker::DB   ();
+use TimeTracker::User ();
+use TimeTracker::Util qw( canon_nick format_minutes );
 
-use TimeTracker::DB;
-use TimeTracker::User;
-use TimeTracker::Util;
+use overload '""' => '_as_string';
 
-use overload
-    '""' => \&_as_string;
+has nick => (is => 'ro', required => 1, coerce => \&_coerce_nick);
+has date => (is => 'ro', required => 1, coerce => \&_coerce_date);
+has minutes => (is => 'ro', required => 1);
+has reason  => (is => 'ro', required => 1);
 
-has nick    => ( is => 'ro', required => 1, coerce => \&_coerce_nick );
-has date    => ( is => 'ro', required => 1, coerce => \&_coerce_date );
-has minutes => ( is => 'ro', required => 1 );
-has reason  => ( is => 'ro', required => 1 );
-
-has _user_date => ( is => 'lazy' );
+has _user_date => (is => 'lazy');
 
 sub _coerce_nick {
     my ($nick) = @_;
@@ -33,26 +36,18 @@ sub _build__user_date {
 
 sub _as_string {
     my ($self) = @_;
-    return sprintf(
-        "%s by %s '%s'",
+    return sprintf(q{%s by %s '%s'},
         $self->_user_date->format_cldr('d MMM yy'),
         format_minutes($self->minutes, 1),
-        $self->reason,
-    );
+        $self->reason,);
 }
 
 sub commit {
     my ($self) = @_;
     my $dbh = TimeTracker::DB->instance;
 
-    $dbh->do(
-        "INSERT INTO edits(nick, dt, minutes, reason) VALUES(?, ?, ?, ?)",
-        undef,
-        $self->nick,
-        $self->date->as_sql,
-        $self->minutes,
-        $self->reason,
-    );
+    $dbh->do('INSERT INTO edits(nick, dt, minutes, reason) VALUES(?, ?, ?, ?)',
+        undef, $self->nick, $self->date->as_sql, $self->minutes, $self->reason,);
 }
 
 1;

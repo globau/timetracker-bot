@@ -1,12 +1,15 @@
 package TimeTracker::Command::Base;
-use Moo;
+use strict;
+use v5.10;
+use warnings;
 
+use Moo;
 use TimeTracker::Util;
 
-has triggers    => ( is => 'lazy' );
+has triggers => (is => 'lazy');
 
-has help_short  => ( is => 'lazy' );
-has help_long    => ( is => 'lazy' );
+has help_short => (is => 'lazy');
+has help_long  => (is => 'lazy');
 
 sub command {
     my ($self) = @_;
@@ -16,14 +19,12 @@ sub command {
 sub handles {
     my ($self, $trigger) = @_;
     $trigger = lc($trigger);
-    return (grep { $_ eq $trigger } @{ $self->triggers}) ? 1 : 0;
+    return (grep { $_ eq $trigger } @{ $self->triggers }) ? 1 : 0;
 }
 
 sub today {
     my ($self, $user) = @_;
-    return DateTime->now
-           ->set_time_zone($user->time_zone)
-           ->truncate(to => 'day');
+    return DateTime->now->set_time_zone($user->time_zone)->truncate(to => 'day');
 }
 
 sub parse_date {
@@ -34,15 +35,14 @@ sub parse_date {
         $args = "last $scope"
             if $args eq 'last';
         my $parser = DateTime::Format::Natural->new(
-            time_zone   => $user->time_zone,
-            format      => 'y/m/d',
+            time_zone => $user->time_zone,
+            format    => 'y/m/d',
         );
         $date = $parser->parse_datetime($args);
         die $parser->error . "\n"
             unless $parser->success;
     } else {
-        $date = DateTime->now
-                ->set_time_zone($user->time_zone);
+        $date = DateTime->now->set_time_zone($user->time_zone);
     }
     $date->truncate(to => 'day');
 

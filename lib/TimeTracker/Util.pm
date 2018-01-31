@@ -1,13 +1,14 @@
 package TimeTracker::Util;
-use Moo;
+use strict;
+use v5.10;
+use warnings;
 
 use parent 'Exporter';
 
-our @EXPORT = qw(
+our @EXPORT_OK = qw(
     canon_nick
     format_minutes
 );
-
 
 sub canon_nick {
     my $nick = lc(shift);
@@ -26,7 +27,12 @@ sub format_minutes {
     return sprintf("$sign%0${hour_width}d:%02d", $hours, $minutes);
 }
 
+1;
+
 package DateTime;
+use strict;
+use v5.10;
+use warnings;
 
 sub as_sql {
     my ($self) = @_;
@@ -37,13 +43,13 @@ sub from_sql {
     my ($class, $value) = @_;
     my ($yyyy, $mm, $dd, $hh, $nn, $ss) = $value =~ /^(\d\d\d\d)-(\d\d)-(\d\d) (\d\d):(\d\d):(\d\d)$/;
     return $class->new(
-        year        => $yyyy,
-        month       => $mm,
-        day         => $dd,
-        hour        => $hh,
-        minute      => $nn,
-        second      => $ss,
-        time_zone   => 'UTC',
+        year      => $yyyy,
+        month     => $mm,
+        day       => $dd,
+        hour      => $hh,
+        minute    => $nn,
+        second    => $ss,
+        time_zone => 'UTC',
     );
 }
 
@@ -51,3 +57,5 @@ sub between {
     my ($self, $other, $units) = @_;
     return $self->delta_ms($other)->in_units($units);
 }
+
+1;

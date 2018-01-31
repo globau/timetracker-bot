@@ -1,35 +1,38 @@
 package TimeTracker::DB;
-use Moo;
+use strict;
+use v5.10;
+use warnings;
 
-use DBI;
-use TimeTracker::Config;
+use DBI                 ();
+use TimeTracker::Config ();
 
 #
 # singleton
 #
 
 my $_instance;
+
 sub instance {
     my $class = shift;
     if (!defined($_instance)) {
         my $config = TimeTracker::Config->instance;
         $_instance = DBI->connect(
             sprintf('DBI:mysql:database=%s;host=%s;port=%s', $config->db_name, $config->db_host, $config->db_port),
-            $config->db_user, $config->db_pass,
-            {
-                RaiseError              => 1,
-                mysql_enable_utf8       => 1,
-                mysql_auto_reconnect    => 1,
+            $config->db_user,
+            $config->db_pass, {
+                RaiseError           => 1,
+                mysql_enable_utf8    => 1,
+                mysql_auto_reconnect => 1,
             },
         );
     }
     return $_instance;
 }
 
-package DBI::db;
-
+package DBI::db;  ## no critic (NamingConventions::Capitalization)
 use strict;
-use warnings FATAL => "all";
+use v5.10;
+use warnings;
 
 sub selectall_hash {
     my ($self, $sql, @args) = @_;
@@ -42,28 +45,18 @@ sub selectrow_hash {
 }
 
 sub table_exists {
-    my $self = shift;
-    my ($table) = @_;
-
-    return $self->selectrow_array("
-        SELECT 1
-            FROM information_schema.TABLES
-            WHERE TABLE_NAME = ?
-                AND TABLE_SCHEMA = ?
-        ",
-        undef,
-        $table,
-        TimeTracker::Config->instance->db_name,
+    my ($self, $table) = @_;
+    return $self->selectrow_array(
+        'SELECT 1 FROM information_schema.TABLES WHERE TABLE_NAME = ? AND TABLE_SCHEMA = ?',
+        undef, $table, TimeTracker::Config->instance->db_name,
     );
 }
 
 sub add_table {
-    my $self = shift;
-    my ($table, $sql) = @_;
+    my ($self, $table, $sql) = @_;
     return if $self->table_exists($table);
-    print "creating table $table\n";
+    say "creating table $table";
     $self->do($sql);
 }
 
 1;
-

@@ -1,10 +1,13 @@
 package TimeTracker::Edits;
+use strict;
+use v5.10;
+use warnings;
+
 use Moo;
+use TimeTracker::DB   ();
+use TimeTracker::Edit ();
 
-use TimeTracker::DB;
-use TimeTracker::Edit;
-
-has _list   => ( is => 'rw', default => sub { [] } );
+has _list => (is => 'rw', default => sub { [] });
 
 sub load {
     my ($class, $user, $date) = @_;
@@ -12,10 +15,7 @@ sub load {
 
     $date = $date->clone->set_time_zone('UTC');
 
-    my @rows = $dbh->selectall_hash(
-        "SELECT * FROM edits WHERE nick=? AND dt=?",
-        $user->nick, $date->as_sql,
-    );
+    my @rows = $dbh->selectall_hash('SELECT * FROM edits WHERE nick=? AND dt=?', $user->nick, $date->as_sql,);
     my @list;
     foreach my $row (@rows) {
         $row->{date} = DateTime->from_sql($row->{dt});
@@ -36,7 +36,7 @@ sub add {
     $self->_list(\@list);
 }
 
-sub each {
+sub iter {
     my ($self) = @_;
     return @{ $self->_list };
 }
@@ -44,7 +44,7 @@ sub each {
 sub minutes {
     my ($self) = @_;
     my $result = 0;
-    foreach my $edit ($self->each) {
+    foreach my $edit ($self->iter) {
         $result += $edit->minutes;
     }
     return $result;

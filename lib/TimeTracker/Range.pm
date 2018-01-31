@@ -1,14 +1,16 @@
 package TimeTracker::Range;
+## no critic (Subroutines::ProhibitUnusedPrivateSubroutines)
+use strict;
+use v5.10;
+use warnings;
+
 use Moo;
 
-use TimeTracker::Util;
+use overload '""' => '_as_string';
 
-use overload
-    '""' => \&_as_string;
-
-has start   => ( is => 'rw', required => 1, trigger => 1, coerce => \&_coerce_date);
-has end     => ( is => 'rw', required => 1, trigger => 1, coerce => \&_coerce_date);
-has minutes => ( is => 'rw', lazy => 1 );
+has start => (is => 'rw', required => 1, trigger => 1, coerce => \&_coerce_date);
+has end   => (is => 'rw', required => 1, trigger => 1, coerce => \&_coerce_date);
+has minutes => (is => 'rw', lazy => 1);
 
 sub _coerce_date {
     my ($date) = @_;
@@ -37,15 +39,15 @@ sub _build_minutes {
 sub clone {
     my ($self) = @_;
     return TimeTracker::Range->new(
-        start   => $self->start->clone,
-        end     => $self->end->clone,
+        start => $self->start->clone,
+        end   => $self->end->clone,
     );
 }
 
 sub _as_string {
     my ($self) = @_;
     return sprintf(
-        "%s - %s [%s] (%s)",
+        '%s - %s [%s] (%s)',
         $self->start->format_cldr('yyyy-MM-dd HH:mm'),
         $self->end->format_cldr('yyyy-MM-dd HH:mm'),
         $self->start->time_zone->name,

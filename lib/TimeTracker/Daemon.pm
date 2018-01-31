@@ -1,8 +1,11 @@
 package TimeTracker::Daemon;
-use Moo;
+use strict;
+use v5.10;
+use warnings;
 
-use Carp qw(confess);
+use Carp qw( confess );
 use Daemon::Generic;
+use List::Util qw( any );
 use TimeTracker::Config;
 use TimeTracker::IRC;
 
@@ -13,14 +16,12 @@ sub start {
 
 sub gd_preconfig {
     my ($self) = @_;
-    return (
-        pidfile => TimeTracker::Config->instance->pid_file,
-    );
+    return (pidfile => TimeTracker::Config->instance->pid_file,);
 }
 
 sub gd_getopt {
     my ($self) = @_;
-    if (grep { $_ eq '-d' } @ARGV) {
+    if (any { $_ eq '-d' } @ARGV) {
         @ARGV = qw(-f start);
         TimeTracker::Config->instance->debug(1);
     }
@@ -30,10 +31,10 @@ sub gd_getopt {
 sub gd_redirect_output {
     my ($self) = @_;
     my $filename = TimeTracker::Config->instance->log_file;
-    open(STDERR, ">>$filename")
+    open(STDERR, '>>', $filename)
         or die "could not open stderr: $!";
-    close(STDOUT);
-    open(STDOUT, ">&STDERR")
+    close(STDOUT) or die $!;
+    open(STDOUT, '>&STDERR')
         or die "redirect STDOUT -> STDERR: $!";
 }
 

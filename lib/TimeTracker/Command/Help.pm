@@ -1,18 +1,25 @@
 package TimeTracker::Command::Help;
-use Moo;
-extends 'TimeTracker::Command::Base';
+## no critic (Subroutines::ProhibitUnusedPrivateSubroutines)
+use strict;
+use v5.10;
+use warnings;
 
+use Moo;
 use TimeTracker::Commands;
 
-sub _build_triggers {[ qw( help h ? ) ]}
+extends 'TimeTracker::Command::Base';
+
+sub _build_triggers {
+    return [qw( help h ? )];
+}
 
 sub _build_help_short {
-    'shows command help'
+    return 'shows command help';
 }
-sub _build_help_long {[
-    'syntax: help [command]',
-    'displays a list of commands, or help for a specific command if provided.',
-]}
+
+sub _build_help_long {
+    return ['syntax: help [command]', 'displays a list of commands, or help for a specific command if provided.',];
+}
 
 sub execute {
     my ($self, $nick, $args) = @_;
@@ -26,12 +33,9 @@ sub execute {
         }
         return \@response;
     } elsif (my $handler = $commands->handler_for($args)) {
-        return [
-            '@private',
-            @{ $handler->help_long },
-        ]
+        return ['@private', @{ $handler->help_long }]; ## no critic (ValuesAndExpressions::RequireInterpolationOfMetachars)
     } else {
-        return [ "unknown command '$args'" ];
+        return ["unknown command '$args'"];
     }
 }
 

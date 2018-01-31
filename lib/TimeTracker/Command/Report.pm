@@ -1,26 +1,36 @@
 package TimeTracker::Command::Report;
-use Moo;
-extends 'TimeTracker::Command::Base';
+## no critic (Subroutines::ProhibitUnusedPrivateSubroutines)
+use strict;
+use v5.10;
+use warnings;
 
 use DateTime::Format::Natural;
 use DateTime;
+use Moo;
 use TimeTracker::Range;
 use TimeTracker::User;
 
-sub _build_triggers {[ qw( report r ) ]}
+extends 'TimeTracker::Command::Base';
+
+sub _build_triggers {
+    return [qw( report r )];
+}
 
 sub _build_help_short {
-    'show a per-month summary of the specified range',
+    return 'show a per-month summary of the specified range';
 }
-sub _build_help_long {[
-    'syntax: report [start month] [end month]',
-    'shows a summary of the months online for the specified range.',
-    'shows the current calendar year if no start month provided.',
-]}
+
+sub _build_help_long {
+    return [
+        'syntax: report [start month] [end month]',
+        'shows a summary of the months online for the specified range.',
+        'shows the current calendar year if no start month provided.',
+    ];
+}
 
 sub execute {
     my ($self, $nick, $args) = @_;
-    my $user = TimeTracker::User->load($nick);
+    my $user  = TimeTracker::User->load($nick);
     my $today = $self->today($user);
 
     # parse args
@@ -46,8 +56,8 @@ sub execute {
     $start_date->truncate(to => 'month');
 
     my $range = TimeTracker::Range->new(
-        start   => $start_date,
-        end     => $end_date,
+        start => $start_date,
+        end   => $end_date,
     );
 
     # grab active ranges
@@ -57,23 +67,23 @@ sub execute {
     # count days worked
     my %days;
     my $total_minutes = 0;
-    my $date = $start_date->clone;
+    my $date          = $start_date->clone;
     while ($date <= $end_date) {
-        $days{$date->ymd} = {
+        $days{ $date->ymd } = {
             date    => $date->clone,
             minutes => 0,
         };
         $date->add(days => 1);
     }
-    foreach my $range ($ranges->each) {
-        $days{$range->start->ymd}{minutes} += $range->minutes;
+    foreach my $range ($ranges->iter) {
+        $days{ $range->start->ymd }{minutes} += $range->minutes;
         $total_minutes += $range->minutes;
     }
 
     # process edits
     foreach my $ymd (sort keys %days) {
         my $edits = TimeTracker::Edits->load($user, $days{$ymd}{date});
-        foreach my $edit ($edits->each) {
+        foreach my $edit ($edits->iter) {
             $days{$ymd}{minutes} += $edit->minutes;
             $total_minutes += $edit->minutes;
         }
@@ -82,10 +92,10 @@ sub execute {
     # consolidate into months;
     my %months;
     foreach my $ymd (keys %days) {
-        my $date = $days{$ymd}{date};
-        my $ym = $date->format_cldr('yyyyMM');
+        my $d  = $days{$ymd}{date};
+        my $ym = $d->format_cldr('yyyyMM');
         $months{$ym} ||= {
-            name    => $date->format_cldr('yyyy MMM'),
+            name    => $d->format_cldr('yyyy MMM'),
             minutes => 0,
         };
         $months{$ym}{minutes} += $days{$ymd}{minutes};
@@ -95,18 +105,20 @@ sub execute {
     my @response;
     my $total = 0;
     foreach my $month (sort { $a <=> $b } keys %months) {
-        push @response, $self->format_response(
+        push @response,
+            $self->format_response(
             minutes => $months{$month}{minutes},
             caption => $months{$month}{name},
             wide    => 1,
-        );
+            );
         $total += $months{$month}{minutes};
     }
-    push @response, $self->format_response(
+    push @response,
+        $self->format_response(
         minutes => $total,
         caption => 'Total',
         wide    => 1,
-    );
+        );
     return \@response;
 }
 

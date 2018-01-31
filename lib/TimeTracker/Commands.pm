@@ -1,11 +1,17 @@
 package TimeTracker::Commands;
-use Moo;
+## no critic (Subroutines::ProhibitUnusedPrivateSubroutines)
+use strict;
+use v5.10;
+use warnings;
 
-use FindBin qw($Bin);
 use File::Spec;
+use FindBin qw( $Bin );
+use List::Util qw( any );
+use Moo;
+use Try::Tiny qw( catch try );
 
-has _handler_files => ( is => 'rw', default => sub { [] } );
-has handlers       => ( is => 'lazy' );
+has _handler_files => (is => 'rw', default => sub { [] });
+has handlers => (is => 'lazy');
 
 sub _build_handlers {
     my ($self) = @_;
@@ -17,18 +23,20 @@ sub _build_handlers {
         my (undef, undef, $class) = File::Spec->splitpath($file);
         next if $class eq 'Base.pm';
         push @{ $self->_handler_files }, $file
-            unless grep { $_ eq $file } @{ $self->_handler_files };
+            unless any { $_ eq $file } @{ $self->_handler_files };
 
-        eval {
+        try {
             require $file;
             $class =~ s/\.pm$//;
             $class = "TimeTracker::Command::$class";
-            push @$handlers, $class->new();
+            push @{$handlers}, $class->new();
+        }
+        catch {
+            print STDERR "$_\n";
         };
-        print STDERR "$@\n" if $@;
     }
 
-    return [ sort { $a->triggers->[0] cmp $b->triggers->[0] } @$handlers ];
+    return [sort { $a->triggers->[0] cmp $b->triggers->[0] } @{$handlers}];
 }
 
 sub execute {
@@ -36,17 +44,17 @@ sub execute {
 
     my ($handler, $args) = $self->_get_handler($command_line);
     return [] unless defined($handler);
-    return [ 'huh?' ] unless $handler;
+    return ['huh?'] unless $handler;
 
     my $response;
-    eval {
+    try {
         $response = $handler->execute($nick, $args);
-    };
-    if ($@) {
-        my $error = "$@";
-        $error =~ s/(^\s+|\s+$)//g;
-        $response = [ "error: $error" ];
     }
+    catch {
+        my $error = $_;
+        $error =~ s/(^\s+|\s+$)//g;
+        $response = ["error: $error"];
+    };
     return $response;
 }
 
@@ -54,7 +62,7 @@ sub handler_for {
     my ($self, $command) = @_;
     $command = lc($command);
     foreach my $handler (@{ $self->handlers }) {
-        return $handler if grep { $_ eq $command } @{ $handler->triggers };
+        return $handler if any { $_ eq $command } @{ $handler->triggers };
     }
     return undef;
 }
@@ -66,8 +74,8 @@ sub _get_handler {
     $command_line =~ s/\s+/ /g;
     $command_line =~ s/^!//;
 
-    return undef unless
-        $command_line =~ s/^(\S+)\s+//
+    return undef
+        unless $command_line =~ s/^(\S+)\s+//
         || $command_line =~ s/^(.+)$//;
     my $command = $1;
     $command_line = undef if $command_line eq '';
@@ -84,9 +92,10 @@ sub _get_handler {
 #
 
 my $_instance;
+
 sub instance {
-    my $class = shift;
-    return defined $_instance ? $_instance : ($_instance = $class->new(@_));
+    my ($class, @args) = @_;
+    return defined $_instance ? $_instance : ($_instance = $class->new(@args));
 }
 
 1;

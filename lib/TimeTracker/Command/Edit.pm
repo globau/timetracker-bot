@@ -1,25 +1,34 @@
 package TimeTracker::Command::Edit;
+## no critic (Subroutines::ProhibitUnusedPrivateSubroutines)
+use strict;
+use v5.10;
+use warnings;
+
 use Moo;
+use Scalar::Util qw( blessed );
+use Text::ParseWords qw( quotewords );
+use TimeTracker::Edit  ();
+use TimeTracker::Edits ();
+use TimeTracker::User  ();
+
 extends 'TimeTracker::Command::Base';
 
-use Scalar::Util qw(blessed);
-use Text::ParseWords;
-use TimeTracker::Edit;
-use TimeTracker::Edits;
-use TimeTracker::User;
-use TimeTracker::Util;
-
-sub _build_triggers {[ qw( edit ed e ) ]}
+sub _build_triggers {
+    return [qw( edit ed e )];
+}
 
 sub _build_help_short {
-    'adjust hours worked'
+    return 'adjust hours worked';
 }
-sub _build_help_long {[
-    'syntax: edit "date" "adjustment" "reason"',
-    'adjusts the hours worked for the specified date.',
-    'eg. edit "last tuesday" "+8 hours" "public holidays"',
-    'eg. edit 2014-04-29 -45m left myself logged in during lunch',
-]}
+
+sub _build_help_long {
+    return [
+        'syntax: edit "date" "adjustment" "reason"',
+        'adjusts the hours worked for the specified date.',
+        'eg. edit "last tuesday" "+8 hours" "public holidays"',
+        'eg. edit 2014-04-29 -45m left myself logged in during lunch',
+    ];
+}
 
 sub execute {
     my ($self, $nick, $args) = @_;
@@ -57,21 +66,21 @@ sub execute {
     my $active_minutes = 0;
     if ($nick eq 'glob') {
         my $range = TimeTracker::Range->new(
-            start   => $date,
-            end     => $date->clone->add(days => 1)->add(minutes => -1),
+            start => $date,
+            end   => $date->clone->add(days => 1)->add(minutes => -1),
         );
         my $ranges = $user->active($range);
         $ranges->split_into_days;
-        foreach my $range ($ranges->each) {
+        foreach my $range ($ranges->iter) {
             $active_minutes += $range->minutes;
         }
     }
 
     my $edits = TimeTracker::Edits->load($user, $date);
     $active_minutes += $edits->minutes;
-    die "total adjustments for " . $date->format_cldr('d MMMM') . " would exceed 24 hours\n"
+    die 'total adjustments for ' . $date->format_cldr('d MMMM') . " would exceed 24 hours\n"
         if $active_minutes + $adjustment > 60 * 24;
-    die "total adjustments for " . $date->format_cldr('d MMMM') . " would be less than zero hours\n"
+    die 'total adjustments for ' . $date->format_cldr('d MMMM') . " would be less than zero hours\n"
         if $active_minutes + $adjustment < 0;
 
     my $edit = TimeTracker::Edit->new(
@@ -81,7 +90,7 @@ sub execute {
         reason  => $reason,
     );
     $edit->commit();
-    return [ "updated $edit" ];
+    return ["updated $edit"];
 }
 
 1;

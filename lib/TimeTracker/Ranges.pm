@@ -1,9 +1,12 @@
 package TimeTracker::Ranges;
+use strict;
+use v5.10;
+use warnings;
+
 use Moo;
+use TimeTracker::Range ();
 
-use TimeTracker::Range;
-
-has _list   => ( is => 'rw', default => sub { [] } );
+has _list => (is => 'rw', default => sub { [] });
 
 sub add {
     my ($self, %args) = @_;
@@ -17,7 +20,7 @@ sub add {
     $self->_list(\@list);
 }
 
-sub each {
+sub iter {
     my ($self) = @_;
     return @{ $self->_list };
 }
@@ -43,14 +46,11 @@ sub set_time_zone {
 
 sub split_into_days {
     my ($self) = @_;
-    foreach my $range ($self->each) {
+    foreach my $range ($self->iter) {
         while ($range->start->ymd ne $range->end->ymd) {
+
             # end of the start date
-            my $new_end = $range->start
-                ->clone
-                ->truncate(to => 'day')
-                ->add(days => 1)
-                ->add(minutes => -1);
+            my $new_end = $range->start->clone->truncate(to => 'day')->add(days => 1)->add(minutes => -1);
             my $new_start = $new_end->clone->add(minutes => 1);
             my $old_end = $range->end;
             $range->end($new_end);
