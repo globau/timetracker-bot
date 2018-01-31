@@ -6,7 +6,7 @@ use warnings;
 
 use File::Slurp qw( read_file );
 use FindBin qw( $RealBin );
-use Mojo::JSON qw( decode_json );
+use YAML::Tiny ();
 use Moo;
 
 #
@@ -33,7 +33,7 @@ has debug        => (is => 'rw', default => sub {0});
 
 around BUILDARGS => sub {
     my ($orig, $class) = @_;
-    my $config = decode_json(scalar read_file("$RealBin/configuration.json"));
+    my $config = YAML::Tiny->read("$RealBin/configuration.yaml")->[0];
 
     $config->{db_port}  ||= 3306;
     $config->{irc_port} ||= 6668;

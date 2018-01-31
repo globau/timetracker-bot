@@ -16,3 +16,4 @@ requires 'Readonly', '2.05';
 requires 'Scalar::Util', '1.31';
 requires 'Text::ParseWords', '3.30';
 requires 'Try::Tiny';
+requires 'YAML::Tiny', '1.70';

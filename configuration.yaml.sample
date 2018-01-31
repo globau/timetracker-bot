@@ -1,0 +1,13 @@
+---
+db_host: "localhost"
+db_port: "3306"
+db_name: "timetracker"
+db_user: "timetracker"
+db_pass: "password"
+
+irc_host: "irc.example.com"
+irc_port: 6667
+irc_channel: "#timetracker"
+irc_nick: "timetracker_"
+irc_password: "password"
+irc_name: "timetracker"
