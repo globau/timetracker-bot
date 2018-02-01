@@ -4,7 +4,7 @@ use v5.10;
 use warnings;
 
 use Moo;
-use TimeTracker::Util;
+use TimeTracker::Util qw( format_minutes );
 
 has triggers => (is => 'lazy');
 
