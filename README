@@ -13,10 +13,11 @@ INSTALLATION
 
 1. install cpanm and the local::lib perl module system-wide
 2. copy configuration.json.sample to configuration.json and edit
-4. run 'cpanm --verbose --local-lib ~/perl5/ --notest --installdeps .' to
+3. run 'cpanm --verbose --local-lib ~/perl5/ --notest --installdeps .' to
    install perl modules
-3. run './setup-db' to setup your database schema
-3. run './timetracker start'
+4. run './setup-db' to setup your database schema
+5. run './timetracker' to run the bot
+6. configure a systemd service using timetracker.service
 
 REGISTRATION
 

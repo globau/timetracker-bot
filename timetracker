@@ -9,6 +9,6 @@ use lib "$RealBin/lib";
 
 BEGIN { $ENV{TZ} = 'UTC' }
 
-use TimeTracker::Daemon ();
+use TimeTracker::IRC ();
 
-TimeTracker::Daemon->start();
+TimeTracker::IRC->start();

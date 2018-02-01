@@ -32,10 +32,8 @@ sub start {
         server     => $config->irc_host,
         port       => $config->irc_port,
         awaypoll   => 60,
+        debug      => 1,
         whojoiners => 0,
-        debug      => $config->debug,
-        irc_trace  => 0,
-        poe_trace  => 0,
     ) or die "failed: $!\n";
 
     $_irc->plugin_add(

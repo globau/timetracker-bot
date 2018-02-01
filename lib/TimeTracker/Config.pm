@@ -6,8 +6,8 @@ use warnings;
 
 use File::Slurp qw( read_file );
 use FindBin qw( $RealBin );
-use YAML::Tiny ();
 use Moo;
+use YAML::Tiny ();
 
 #
 # propertie qw(decode_json);
@@ -29,7 +29,6 @@ has irc_name     => (is => 'ro');
 has pid_file     => (is => 'lazy');
 has log_file     => (is => 'lazy');
 has command_file => (is => 'lazy');
-has debug        => (is => 'rw', default => sub {0});
 
 around BUILDARGS => sub {
     my ($orig, $class) = @_;
