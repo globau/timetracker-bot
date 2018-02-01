@@ -9,6 +9,10 @@ use lib "$RealBin/lib";
 
 BEGIN { $ENV{TZ} = 'UTC' }
 
+open(my $fh, '>', "$RealBin/timetracker.pid") or die $!;
+say $fh $$;
+close($fh) or die $!;
+
 use TimeTracker::IRC ();
 
 TimeTracker::IRC->start();
