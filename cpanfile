@@ -4,7 +4,6 @@ requires 'DBI', '1.63';
 requires 'Daemon::Generic', '0.83';
 requires 'File::Slurp', '9999.19';
 requires 'Module::Refresh', '0.17';
-requires 'Mojo::JSON';
 requires 'Moo', '1.003001';
 requires 'POE', '1.356';
 requires 'POE::Component::IRC', '6.83';
