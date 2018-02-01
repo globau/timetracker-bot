@@ -4,12 +4,9 @@ use strict;
 use v5.10;
 use warnings;
 
-use DateTime::Format::Natural;
-use DateTime;
 use Moo;
-use TimeTracker::Range;
-use TimeTracker::User;
-use TimeTracker::Util;
+use TimeTracker::Range ();
+use TimeTracker::User  ();
 
 extends 'TimeTracker::Command::Base';
 

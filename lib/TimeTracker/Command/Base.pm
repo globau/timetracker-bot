@@ -3,6 +3,7 @@ use strict;
 use v5.10;
 use warnings;
 
+use DateTime::Format::Natural ();
 use Moo;
 use TimeTracker::Util qw( format_minutes );
 

@@ -3,7 +3,6 @@ requires 'DBD::mysql', '4.043';
 requires 'DBI', '1.63';
 requires 'Daemon::Generic', '0.83';
 requires 'DateTime::Format::Natural', '1.05';
-requires 'File::Slurp', '9999.19';
 requires 'Module::Refresh', '0.17';
 requires 'Moo', '1.003001';
 requires 'POE', '1.356';

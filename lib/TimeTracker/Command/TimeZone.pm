@@ -4,9 +4,9 @@ use strict;
 use v5.10;
 use warnings;
 
-use DateTime::TimeZone;
+use DateTime::TimeZone ();
 use Moo;
-use TimeTracker::User;
+use TimeTracker::User ();
 
 extends 'TimeTracker::Command::Base';
 

@@ -5,7 +5,7 @@ use v5.10;
 use warnings;
 
 use Moo;
-use TimeTracker::Commands;
+use TimeTracker::Commands ();
 
 extends 'TimeTracker::Command::Base';
 

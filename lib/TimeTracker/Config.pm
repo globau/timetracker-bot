@@ -4,7 +4,6 @@ use strict;
 use v5.10;
 use warnings;
 
-use File::Slurp qw( read_file );
 use FindBin qw( $RealBin );
 use Moo;
 use YAML::Tiny ();

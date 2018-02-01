@@ -4,8 +4,7 @@ use strict;
 use v5.10;
 use warnings;
 
-use File::Spec;
-use FindBin qw( $Bin );
+use File::Spec ();
 use List::Util qw( any );
 use Moo;
 use Try::Tiny qw( catch try );
